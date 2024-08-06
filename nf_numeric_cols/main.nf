@@ -1,5 +1,5 @@
 process NUMERIC_COLS {
-    conda "conda-forge::r-base==4.1.2"
+    conda "r-ggplot2"
 
     input:
     path my_csv
@@ -16,6 +16,10 @@ process NUMERIC_COLS {
     """
 }
 
+def tuple_to_split_tuple(string) {
+    return string.split(',')
+}
+
 workflow {
     my_csvs = Channel.of("https://raw.githubusercontent.com/selva86/datasets/master/midwest.csv")
 
@@ -24,7 +28,7 @@ workflow {
     numeric_cols.view()
     // outputs: PID,area,poptotal,popdensity,popwhite,popblack,popamerindian,...    (incorrect)
 
-    numeric_cols.map{it.split(',')}.flatten().view()
+    numeric_cols.map{string_to_list}.flatten().view()
     // outputs: PID                                                                 (correct)
     //          area
     //          poptotal
